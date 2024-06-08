@@ -1,0 +1,91 @@
+#%%
+# 导入modelscope的pipeline和Tasks常量，用于加载和调用预训练的模型  
+from modelscope.pipelines import pipeline  
+from modelscope.utils.constant import Tasks  
+  
+# 加载人脸检测模型，使用modelscope的pipeline函数和Tasks.face_detection任务  
+# 并指定模型名称为'damo/cv_resnet101_face-detection_cvpr22papermogface'  
+mog_face_detection_func = pipeline(Tasks.face_detection, 'damo/cv_resnet101_face-detection_cvpr22papermogface')  
+  
+# 定义待检测图像
+src_img_path = cv2.imread('c:\\imdb_crop\\00\\nm0000200_rm104372224_1955-5-17_2006.jpg',1)  
+  
+# 调用加载的模型进行人脸检测，并将结果存储在raw_result中  
+raw_result = mog_face_detection_func(src_img_path)  
+  
+# 打印检测结果  
+print('face detection output: {}.'.format(raw_result))  
+  
+# 如果想要显示结果，可以运行以下代码  
+  
+# 导入modelscope的工具函数和OpenCV库  
+from modelscope.utils.cv.image_utils import draw_face_detection_no_lm_result  
+import cv2  
+import numpy as np  
+  
+# 加载图像
+src_img = cv2.imread('c:\\imdb_crop\\00\\nm0000200_rm104372224_1955-5-17_2006.jpg',1) 
+  
+# 使用OpenCV将RGB图像转换为BGR格式
+src_img = cv2.cvtColor(np.asarray(src_img), cv2.COLOR_RGB2BGR)  
+  
+# 将原始图像保存到本地文件'src_img.jpg'  
+cv2.imwrite('src_img.jpg', src_img)  
+  
+# 在原始图像上绘制人脸检测结果，并返回绘制后的图像dst_img  
+dst_img = draw_face_detection_no_lm_result('src_img.jpg', raw_result)  
+  
+# 将绘制后的图像保存到本地文件'dst_img.jpg'  
+cv2.imwrite('dst_img.jpg', dst_img)  
+  
+# 导入matplotlib库用于显示图像  
+import matplotlib.pyplot as plt  
+  
+# 使用OpenCV将BGR图像转换为RGB格式，以便使用matplotlib显示  
+dst_img = cv2.cvtColor(np.asarray(dst_img), cv2.COLOR_BGR2RGB)  
+  
+# 使用matplotlib的imshow函数显示绘制了人脸检测结果的图像  
+plt.imshow(dst_img)  
+  
+# 注意：确保你的环境支持GUI显示（例如，在Jupyter Notebook或具有图形界面的系统上）  
+# 否则，plt.imshow可能无法正常工作
+
+# %%
+# 导入modelscope库中的pipeline模块，用于快速调用模型进行推理  
+from modelscope.pipelines import pipeline  
+# 导入modelscope库中定义的Tasks常量，这些常量表示不同的任务类型  
+from modelscope.utils.constant import Tasks  
+  
+# 使用pipeline函数和Tasks.face_detection常量以及'damo/cv_manual_face-detection_mtcnn'模型ID创建一个MTCNN人脸检测pipeline  
+mtcnn_face_detection = pipeline(Tasks.face_detection, 'damo/cv_manual_face-detection_mtcnn')  
+  
+# 设置待检测图片的路径
+img_path = 'c:\\imdb_crop\\00\\nm0000200_rm104372224_1955-5-17_2006.jpg'
+  
+# 调用mtcnn_face_detection pipeline对图片进行人脸检测，并返回结果  
+result = mtcnn_face_detection(img_path)  
+# 打印人脸检测结果  
+print('face detection output: {}.'.format(result))  
+  
+# 如果想要展示结果，你可以运行以下代码  
+# 导入modelscope库中用于绘制人脸检测结果的函数  
+from modelscope.utils.cv.image_utils import draw_face_detection_result  
+# 导入modelscope库中用于加载图片的函数  
+from modelscope.preprocessors.image import LoadImage  
+# 导入OpenCV库用于图片操作  
+import cv2  
+  
+# 使用LoadImage.convert_to_ndarray函数将图片转换为NumPy数组（即图片数据）  
+img = LoadImage.convert_to_ndarray(img_path)  
+# 使用cv2.imwrite函数将图片数据保存到本地文件'srcImg.jpg'  
+cv2.imwrite('srcImg.jpg', img)  
+  
+# 调用draw_face_detection_result函数在图片上绘制人脸检测的结果，并返回绘制后的图片数据  
+img_draw = draw_face_detection_result('srcImg.jpg', result)  
+# 使用cv2.imwrite函数将绘制人脸检测结果的图片保存到本地文件'result.jpg'  
+cv2.imwrite('result.jpg', img_draw)  
+  
+# 导入matplotlib库用于在屏幕上展示图片  
+import matplotlib.pyplot as plt  
+# 使用plt.imshow函数展示绘制人脸检测结果的图片  
+plt.imshow(img_draw)  
